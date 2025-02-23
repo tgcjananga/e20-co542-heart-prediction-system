@@ -18,13 +18,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Verify Azure Subscription
-        run: az account show
+      - name: Register Azure ML Resource Provider
+        run: az provider register --namespace Microsoft.MachineLearningServices
+
+      - name: Set Azure Subscription
+        run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Install Azure ML CLI
         run: az extension add --name ml
 
-      - name: Deploy Flask App in Azure ML
+      - name: Deploy Model as Web Service
         run: |
           az ml online-endpoint create --name heart-disease-endpoint \
                                        --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
