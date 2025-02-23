@@ -1,0 +1,13 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+command: >-
+  python train.py
+inputs:
+  training_data:
+    type: uri_folder
+    path: azureml:heart-disease-data@latest
+compute: azureml:cpu-cluster
+environment:
+  image: mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04
+output:
+  model_output:
+    type: uri_folder

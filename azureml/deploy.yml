@@ -1,0 +1,9 @@
+$schema: https://azuremlschemas.azureedge.net/latest/onlineEndpoint.schema.json
+name: heart-disease-endpoint
+type: online
+deployment:
+  model: azureml:model/heart-disease-ann:latest
+  instance_type: Standard_DS3_v2
+  scale_settings:
+    type: manual
+    instance_count: 1

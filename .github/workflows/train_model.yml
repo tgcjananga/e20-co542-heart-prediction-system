@@ -18,19 +18,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Verify Azure Subscription
-        run: az account show
-
       - name: Install Azure ML CLI
         run: az extension add --name ml
-
-      - name: Upload Data to Azure ML
-        run: |
-          az ml data create --name heart-disease-data \
-                           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                           --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
-                           --path ./data \
-                           --type uri_folder
 
       - name: Submit Training Job
         run: |

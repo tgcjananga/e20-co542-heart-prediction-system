@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
       - name: Install Azure ML CLI
         run: az extension add --name ml
 
-      - name: Deploy Model as Web Service
+      - name: Deploy Model
         run: |
           az ml online-endpoint create --name heart-disease-endpoint \
                                        --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
@@ -33,6 +33,3 @@ jobs:
                                          --instance-type Standard_DS3_v2 \
                                          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                                          --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
-
-      - name: Get Deployment Status
-        run: az ml online-endpoint show --name heart-disease-endpoint --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
