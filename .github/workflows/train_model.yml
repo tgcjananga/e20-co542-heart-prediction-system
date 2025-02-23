@@ -23,6 +23,4 @@ jobs:
 
       - name: Submit Training Job
         run: |
-          az ml job create --file azureml/train.yml \
-                           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                           --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+          az ml job create --file azureml/train.yml --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
