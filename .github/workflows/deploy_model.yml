@@ -33,3 +33,4 @@ jobs:
                                          --instance-type Standard_DS3_v2 \
                                          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                                          --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+                                         
