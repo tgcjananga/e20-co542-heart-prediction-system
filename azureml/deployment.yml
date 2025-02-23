@@ -1,10 +1,12 @@
-$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
 name: heart-disease-deployment
-endpoint_name: heart-disease-endpoint
-model:
-  name: heart-disease-model
-  version: 1
-environment: 
-  image: mcr.microsoft.com/azureml/minimal-ubuntu18.04-py37-cpu-inference:latest
-  conda_file: azureml/environment.yml
-instance_type: Standard_DS2_v2
+endpoint_name: hdpsystem-zxyzt
+model: azureml:heart-disease-model:1
+code_configuration:
+  code: .
+  scoring_script: score.py
+environment: azureml:heart-disease-env:1
+compute: my-compute
+instance_type: Standard_DS3_v2
+scale_settings:
+  scale_type: manual
+  instance_count: 1

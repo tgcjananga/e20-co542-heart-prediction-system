@@ -3,8 +3,9 @@ dependencies:
   - python=3.8
   - pip
   - pip:
-      - pandas
+      - azureml-defaults
       - numpy
+      - pandas
       - scikit-learn
       - joblib
       - flask
