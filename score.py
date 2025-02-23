@@ -1,31 +1,46 @@
 import json
 import joblib
 import numpy as np
-import pandas as pd
+import os
+import torch
 from azureml.core.model import Model
-from flask import Flask, request, jsonify
-
-# Initialize the Flask app
-app = Flask(__name__)
+from sklearn.preprocessing import StandardScaler
 
 # Load the model during initialization
 def init():
-    global model
-    model_path = Model.get_model_path('heart-disease-model')  # Ensure this model name matches your Azure ML registration
+    global model, scaler
+
+    # Get model path
+    model_path = Model.get_model_path('heart-disease-model')
+    scaler_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'scaler.pkl')
+
+    # Load the model
     model = joblib.load(model_path)
 
-# Define the scoring route
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        data = request.get_json()
-        input_data = pd.DataFrame(data['data'])
-        predictions = model.predict(input_data)
-        return jsonify({'predictions': predictions.tolist()})
-    except Exception as e:
-        return jsonify({'error': str(e)})
+    # Load the scaler (if used for preprocessing)
+    if os.path.exists(scaler_path):
+        scaler = joblib.load(scaler_path)
+    else:
+        scaler = None
 
-# Run the app
-if __name__ == '__main__':
-    init()
-    app.run(host='0.0.0.0', port=5001)
+# Run function for inference
+def run(raw_data):
+    try:
+        # Parse input JSON
+        data = json.loads(raw_data)
+        
+        # Convert input to NumPy array
+        input_data = np.array(data['data'])
+
+        # Preprocess data if scaler exists
+        if scaler:
+            input_data = scaler.transform(input_data)
+
+        # Make prediction
+        predictions = model.predict(input_data)
+
+        # Convert to list for JSON response
+        return json.dumps({'predictions': predictions.tolist()})
+
+    except Exception as e:
+        return json.dumps({'error': str(e)})

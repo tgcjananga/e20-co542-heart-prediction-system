@@ -1,11 +1,10 @@
 name: heart-disease-env
 dependencies:
   - python=3.8
-  - pip
   - pip:
-      - azureml-defaults
-      - numpy
-      - pandas
-      - scikit-learn
-      - joblib
-      - flask
+    - azureml-defaults
+    - joblib
+    - numpy
+    - pandas
+    - scikit-learn
+    - torch
