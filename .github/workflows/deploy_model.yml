@@ -29,16 +29,31 @@ jobs:
             echo "ENDPOINT_EXISTS=false" >> $GITHUB_ENV
           fi
 
-      - name: Create Endpoint (If Not Exists)
+      - name: Delete Existing Endpoint if Failed
+        if: env.ENDPOINT_EXISTS == 'true'
+        run: |
+          ENDPOINT_STATUS=$(az ml online-endpoint show --name heart-disease-endpoint \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} --query provisioning_state -o tsv)
+
+          if [[ "$ENDPOINT_STATUS" == "Failed" ]]; then
+            az ml online-endpoint delete --name heart-disease-endpoint \
+                --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} --yes
+          fi
+
+      - name: Create Endpoint if Not Exists
         if: env.ENDPOINT_EXISTS == 'false'
         run: |
           az ml online-endpoint create --name heart-disease-endpoint \
               --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
               --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
-      - name: Update Existing Endpoint (If Exists)
-        if: env.ENDPOINT_EXISTS == 'true'
+      - name: Deploy Model
         run: |
-          az ml online-endpoint update --name heart-disease-endpoint \
+          az ml online-deployment create --name heart-disease-deployment \
+              --endpoint heart-disease-endpoint \
+              --model heart-disease-ann:latest \
+              --instance-type Standard_DS3_v2 \
               --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
               --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
