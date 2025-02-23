@@ -23,4 +23,8 @@ jobs:
 
       - name: Submit Training Job
         run: |
-          az ml job create --file azureml/train.yml --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+          az ml data create --name heart-disease-data \
+              --path ./data/heart_disease.csv \
+              --type uri_file \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}

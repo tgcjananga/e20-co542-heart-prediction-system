@@ -15,3 +15,4 @@ inputs:
 outputs:
   model_output:
     type: uri_folder
+
