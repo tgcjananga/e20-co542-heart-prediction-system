@@ -33,7 +33,7 @@ jobs:
                                        --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                                        --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
 
-          az ml online-deployment create --name heart-disease-deployment \
+          az ml online-endpoint update --name heart-disease-deployment \
                                          --endpoint heart-disease-endpoint \
                                          --model heart-disease-ann:latest \
                                          --instance-type Standard_DS3_v2 \
