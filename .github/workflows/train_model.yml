@@ -8,7 +8,7 @@ on:
 
 jobs:
   train:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -17,6 +17,9 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Verify Azure Subscription
+        run: az account show
 
       - name: Install Azure ML CLI
         run: az extension add --name ml
@@ -34,10 +37,3 @@ jobs:
           az ml job create --file azureml/train.yml \
                            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
                            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
-
-      - name: Register Trained Model
-        run: |
-          az ml model create --name heart-disease-ann \
-                            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                            --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }} \
-                            --path outputs/model.pkl
