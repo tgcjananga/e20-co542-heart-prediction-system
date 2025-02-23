@@ -1,0 +1,27 @@
+name: Setup Azure ML Workspace
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Azure CLI
+        run: choco install azure-cli
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Up Azure ML Workspace
+        run: |
+          az extension add --name ml
+          az ml workspace create --name ${{ secrets.AZURE_ML_WORKSPACE }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --location ${{ secrets.AZURE_LOCATION }}
+
+      - name: Verify Azure ML Workspace
+        run: az ml workspace show --name ${{ secrets.AZURE_ML_WORKSPACE }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
