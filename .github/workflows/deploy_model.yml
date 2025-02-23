@@ -1,4 +1,4 @@
-name: Deploy Flask App in Azure ML
+name: Deploy Model to Azure ML
 
 on:
   push:
@@ -24,18 +24,14 @@ jobs:
       - name: Set Azure Subscription
         run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Verify Subscription
+        run: az account show
+
       - name: Install Azure ML CLI
         run: az extension add --name ml
 
       - name: Deploy Model as Web Service
         run: |
           az ml online-endpoint create --name heart-disease-endpoint \
-                                       --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                                       --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
-
-          az ml online-endpoint update --name heart-disease-deployment \
-                                         --endpoint heart-disease-endpoint \
-                                         --model heart-disease-ann:latest \
-                                         --instance-type Standard_DS3_v2 \
-                                         --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-                                         --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
