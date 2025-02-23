@@ -110,5 +110,4 @@ To run this project on your local system, follow these steps:
 ### **1️⃣ Clone the Repository**
 ```sh
 git clone https://github.com/tgcjananga/e20-co542-heart-prediction-system
-cd YOUR-REPO
 
