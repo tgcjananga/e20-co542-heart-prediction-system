@@ -4,55 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Disease Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .input-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .risk-meter {
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(to right, #4CAF50, #FFC107, #FF5722, #f44336);
+            margin: 10px 0;
+            border-radius: 10px;
+            position: relative;
+        }
+        .risk-indicator {
+            width: 10px;
+            height: 30px;
+            background: #000;
+            position: absolute;
+            transform: translateX(-50%);
+        }
+        .result-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .recommendations {
+            margin-top: 20px;
+        }
+        .recommendations li {
+            margin: 10px 0;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Heart Disease Prediction System</h1>
     <form action="/predict" method="post">
-        <label for="age">Age:</label>
-        <input type="number" name="age" required><br>
+        <div class="input-group">
+            <label for="age">Age:</label>
+            <div class="input-description">Enter your age in years (e.g., 45)</div>
+            <input type="number" name="age" required>
+        </div>
 
-        <label for="sex">Sex (0 = Female, 1 = Male):</label>
-        <input type="number" name="sex" min="0" max="1" required><br>
+        <div class="input-group">
+            <label for="sex">Sex:</label>
+            <div class="input-description">Enter 0 for Female, 1 for Male</div>
+            <input type="number" name="sex" min="0" max="1" required>
+        </div>
 
-        <label for="cp">Chest Pain Type (0-3):</label>
-        <input type="number" name="cp" min="0" max="3" required><br>
+        <div class="input-group">
+            <label for="cp">Chest Pain Type:</label>
+            <div class="input-description">
+                0: Typical angina
+                1: Atypical angina
+                2: Non-anginal pain
+                3: Asymptomatic
+            </div>
+            <input type="number" name="cp" min="0" max="3" required>
+        </div>
 
-        <label for="trestbps">Resting Blood Pressure (mmHg):</label>
-        <input type="number" name="trestbps" required><br>
+        <div class="input-group">
+            <label for="trestbps">Resting Blood Pressure:</label>
+            <div class="input-description">Enter resting blood pressure in mm Hg (normal range: 90-140)</div>
+            <input type="number" name="trestbps" required>
+        </div>
 
-        <label for="chol">Cholesterol (mg/dl):</label>
-        <input type="number" name="chol" required><br>
+        <div class="input-group">
+            <label for="chol">Cholesterol:</label>
+            <div class="input-description">Enter serum cholesterol in mg/dl (normal range: 120-240)</div>
+            <input type="number" name="chol" required>
+        </div>
 
-        <label for="fbs">Fasting Blood Sugar (>120 mg/dl, 1 = Yes, 0 = No):</label>
-        <input type="number" name="fbs" min="0" max="1" required><br>
+        <div class="input-group">
+            <label for="fbs">Fasting Blood Sugar:</label>
+            <div class="input-description">Enter 1 if fasting blood sugar > 120 mg/dl, 0 if not</div>
+            <input type="number" name="fbs" min="0" max="1" required>
+        </div>
 
-        <label for="restecg">Resting ECG (0-2):</label>
-        <input type="number" name="restecg" min="0" max="2" required><br>
+        <div class="input-group">
+            <label for="restecg">Resting ECG Results:</label>
+            <div class="input-description">
+                0: Normal
+                1: ST-T wave abnormality
+                2: Left ventricular hypertrophy
+            </div>
+            <input type="number" name="restecg" min="0" max="2" required>
+        </div>
 
-        <label for="thalach">Max Heart Rate Achieved:</label>
-        <input type="number" name="thalach" required><br>
+        <div class="input-group">
+            <label for="thalach">Maximum Heart Rate:</label>
+            <div class="input-description">Enter maximum heart rate achieved (normal range: 60-220)</div>
+            <input type="number" name="thalach" required>
+        </div>
 
-        <label for="exang">Exercise-Induced Angina (1 = Yes, 0 = No):</label>
-        <input type="number" name="exang" min="0" max="1" required><br>
+        <div class="input-group">
+            <label for="exang">Exercise Induced Angina:</label>
+            <div class="input-description">Enter 1 if exercise induced angina is present, 0 if not</div>
+            <input type="number" name="exang" min="0" max="1" required>
+        </div>
 
-        <label for="oldpeak">ST Depression (Oldpeak):</label>
-        <input type="number" step="0.1" name="oldpeak" required><br>
+        <div class="input-group">
+            <label for="oldpeak">ST Depression:</label>
+            <div class="input-description">Enter ST depression induced by exercise relative to rest (0.0-6.0)</div>
+            <input type="number" step="0.1" name="oldpeak" required>
+        </div>
 
-        <label for="slope">Slope of ST Segment (0-2):</label>
-        <input type="number" name="slope" min="0" max="2" required><br>
+        <div class="input-group">
+            <label for="slope">Slope of Peak Exercise ST Segment:</label>
+            <div class="input-description">
+                0: Upsloping
+                1: Flat
+                2: Downsloping
+            </div>
+            <input type="number" name="slope" min="0" max="2" required>
+        </div>
 
-        <label for="ca">Number of Major Vessels (0-3):</label>
-        <input type="number" name="ca" min="0" max="3" required><br>
+        <div class="input-group">
+            <label for="ca">Number of Major Vessels:</label>
+            <div class="input-description">Number of major vessels colored by fluoroscopy (0-3)</div>
+            <input type="number" name="ca" min="0" max="3" required>
+        </div>
 
-        <label for="thal">Thalassemia (0-3):</label>
-        <input type="number" name="thal" min="0" max="3" required><br>
+        <div class="input-group">
+            <label for="thal">Thalassemia:</label>
+            <div class="input-description">
+                0: Normal
+                1: Fixed defect
+                2: Reversible defect
+                3: Not available
+            </div>
+            <input type="number" name="thal" min="0" max="3" required>
+        </div>
 
         <button type="submit">Predict</button>
     </form>
 
-    {% if prediction is not none %}
-        <h2>Prediction: {{ prediction }}</h2>
+    {% if result %}
+    <div class="result-section">
+        <h2>Prediction Results</h2>
+        <p><strong>Primary Assessment:</strong> {{ result.prediction }}</p>
+        <p><strong>Risk Probability:</strong> {{ result.probability }}%</p>
+        <p><strong>Risk Category:</strong> {{ result.risk_category }}</p>
+        
+        <div class="risk-meter">
+            <div class="risk-indicator" style="left: {{ result.probability }}%"></div>
+        </div>
+        
+        <div class="recommendations">
+            <h3>Recommendations:</h3>
+            <ul>
+                {% for recommendation in result.recommendations %}
+                <li>{{ recommendation }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
     {% endif %}
 </body>
 </html>
