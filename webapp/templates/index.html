@@ -3,71 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heart Disease Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>iHeart - Heart Disease Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .image-container {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+            width: 45%; /* Adjust width for responsive layout */
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .image-description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Layout for the visuals section */
+        .visuals {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Layout for the first row (only one image) */
+        .visuals .row-1 {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Layout for the second row (3 images) */
+        .visuals .row-2 {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>Heart Disease Prediction System</h1>
-    
-    <form action="/predict" method="post">
-        <label for="age">Age:</label>
-        <input type="number" name="age" required><br>
+    <div class="container">
+        <header>
+            <h1 class="welcome-text">Welcome to <span class="brand">iHeart</span></h1>
+            <p class="subtext">An interactive heart disease analysis dashboard</p>
+        </header>
 
-        <label for="sex">Sex (0 = Female, 1 = Male):</label>
-        <input type="number" name="sex" min="0" max="1" required><br>
+        <h2>Dataset Summary</h2>
+        <pre class="analysis-box">{{ analysis_results }}</pre>
 
-        <label for="cp">Chest Pain Type (0-3):</label>
-        <input type="number" name="cp" min="0" max="3" required><br>
+        <h2>Visualizations</h2>
 
-        <label for="trestbps">Resting Blood Pressure (mmHg):</label>
-        <input type="number" name="trestbps" required><br>
+        <div class="visuals">
+            <!-- First row (Heatmap) -->
+            <div class="row-1">
+                <div class="image-container">
+                    <h3>Heatmap</h3>
+                    <img src="{{ url_for('static', filename='visuals/heatmap.png') }}" alt="Heatmap">
+                    <div class="image-description">
+                        This heatmap shows the correlation between the different features in the dataset. High correlation indicates strong relationships between features.
+                    </div>
+                </div>
+            </div>
 
-        <label for="chol">Cholesterol (mg/dl):</label>
-        <input type="number" name="chol" required><br>
+            <!-- Second row (Other 3 images) -->
+            <div class="row-2">
+                <div class="image-container">
+                    <h3>Target Distribution</h3>
+                    <img src="{{ url_for('static', filename='visuals/target_distribution.png') }}" alt="Target Distribution">
+                    <div class="image-description">
+                        This plot shows the distribution of the target variable. The target represents whether or not a person has heart disease (1 = disease, 0 = no disease).
+                    </div>
+                </div>
 
-        <label for="fbs">Fasting Blood Sugar (>120 mg/dl, 1 = Yes, 0 = No):</label>
-        <input type="number" name="fbs" min="0" max="1" required><br>
+                <div class="image-container">
+                    <h3>Gender Distribution</h3>
+                    <img src="{{ url_for('static', filename='visuals/gender_distribution.png') }}" alt="Gender Distribution">
+                    <div class="image-description">
+                        This plot shows the distribution of gender in the dataset. It indicates the number of male and female patients.
+                    </div>
+                </div>
 
-        <label for="restecg">Resting ECG (0-2):</label>
-        <input type="number" name="restecg" min="0" max="2" required><br>
+                <div class="image-container">
+                    <h3>Heart Disease by Gender</h3>
+                    <img src="{{ url_for('static', filename='visuals/heart_disease_by_gender.png') }}" alt="Heart Disease by Gender">
+                    <div class="image-description">
+                        This plot shows the relationship between gender and heart disease. It breaks down the disease distribution by gender.
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <label for="thalach">Max Heart Rate Achieved:</label>
-        <input type="number" name="thalach" required><br>
-
-        <label for="exang">Exercise-Induced Angina (1 = Yes, 0 = No):</label>
-        <input type="number" name="exang" min="0" max="1" required><br>
-
-        <label for="oldpeak">ST Depression (Oldpeak):</label>
-        <input type="number" step="0.1" name="oldpeak" required><br>
-
-        <label for="slope">Slope of ST Segment (0-2):</label>
-        <input type="number" name="slope" min="0" max="2" required><br>
-
-        <label for="ca">Number of Major Vessels (0-3):</label>
-        <input type="number" name="ca" min="0" max="3" required><br>
-
-        <label for="thal">Thalassemia (0-3):</label>
-        <input type="number" name="thal" min="0" max="3" required><br>
-
-        <button type="submit">Predict</button>
-    </form>
-
-    {% if prediction is not none %}
-        <h2>Prediction: {{ prediction }}</h2>
-    {% endif %}
-
-    {% if health_tips %}
-        <h3>Health Recommendations:</h3>
-        <p>{{ health_tips }}</p>
-    {% endif %}
-
-    {% if explanation %}
-        <h3>Feature Importance:</h3>
-        <ul>
-            {% for feature, importance in explanation %}
-                <li><strong>{{ feature }}:</strong> {{ importance|round(3) }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <a href="{{ url_for('predict') }}" class="button">Go to Prediction</a>
+    </div>
 </body>
 </html>

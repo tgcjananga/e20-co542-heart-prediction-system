@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 import joblib
 import numpy as np
 
@@ -21,55 +21,44 @@ if not os.path.exists(scaler_path):
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
-# Feature descriptions for better explanation
-FEATURE_NAMES = [
-    "Age", "Sex", "Chest Pain Type", "Resting Blood Pressure", "Cholesterol",
-    "Fasting Blood Sugar", "Resting ECG", "Max Heart Rate", "Exercise-Induced Angina",
-    "ST Depression", "Slope of ST Segment", "Major Vessels Count", "Thalassemia"
-]
-
 @app.route('/')
-def home():
-    return render_template('index.html', prediction=None, explanation=None)
+def welcome():
+    # Return the page that will display the visuals
+    return render_template('index.html', prediction=None)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    try:
-        input_data = [float(request.form[key]) for key in request.form]
-        input_data = np.array(input_data).reshape(1, -1)
+    if request.method == 'POST':
+        # Extract the form data from the POST request
+        try:
+            age = float(request.form['age'])
+            sex = float(request.form['sex'])
+            cp = float(request.form['cp'])
+            trestbps = float(request.form['trestbps'])
+            chol = float(request.form['chol'])
+            fbs = float(request.form['fbs'])
+            restecg = float(request.form['restecg'])
+            thalach = float(request.form['thalach'])
+            exang = float(request.form['exang'])
+            oldpeak = float(request.form['oldpeak'])
+            slope = float(request.form['slope'])
+            ca = float(request.form['ca'])
+            thal = float(request.form['thal'])
+        except ValueError:
+            return render_template('predict.html', prediction="Invalid input. Please enter valid numbers.")
+
+        # Prepare the input data as a numpy array and scale it
+        input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
         input_data = scaler.transform(input_data)
 
-        # Predict probability
-        if hasattr(model, "predict_proba"):
-            probability = model.predict_proba(input_data)[0][1]  # Probability of heart disease
-            percentage_risk = round(probability * 100, 2)
-            prediction_text = f"You have a {percentage_risk}% risk of heart disease."
-        else:
-            prediction = model.predict(input_data)[0]
-            prediction_text = "Heart Disease Detected" if prediction == 1 else "No Heart Disease"
+        # Predict using the model
+        prediction = model.predict(input_data)[0]
 
-        # Feature importance (if the model supports it)
-        if hasattr(model, "feature_importances_"):
-            importances = model.feature_importances_
-            feature_contributions = dict(zip(FEATURE_NAMES, importances))
-            sorted_features = sorted(feature_contributions.items(), key=lambda x: x[1], reverse=True)
-        else:
-            sorted_features = None
+        # Return the prediction result
+        result = "Heart Disease Detected" if prediction == 1 else "No Heart Disease"
+        return render_template('predict.html', prediction=result)
 
-        # Health Recommendations
-        health_tips = ""  # Default empty
-        if percentage_risk >= 70:
-            health_tips = "High risk detected. Consult a cardiologist immediately and adopt a heart-healthy lifestyle."
-        elif 40 <= percentage_risk < 70:
-            health_tips = "Moderate risk. Consider dietary improvements, regular exercise, and monitoring your condition."
-        elif 20 <= percentage_risk < 40:
-            health_tips = "Low to moderate risk. Maintain a balanced diet, stay active, and check up regularly."
-        else:
-            health_tips = "Minimal risk detected. Keep up with a healthy lifestyle to prevent future risks."
-
-        return render_template('index.html', prediction=prediction_text, explanation=sorted_features, health_tips=health_tips)
-    except ValueError:
-        return render_template('index.html', prediction="Invalid input. Please enter numeric values.")
+    return render_template('predict.html', prediction=None)
 
 if __name__ == '__main__':
     app.run(debug=True)

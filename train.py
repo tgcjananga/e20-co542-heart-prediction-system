@@ -1,12 +1,9 @@
 import pandas as pd
-import numpy as np
-import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
-import argparse
-import os
+from xgboost import XGBClassifier
+import joblib
 
 # Load dataset
 data = pd.read_csv("data/heart_disease.csv")
@@ -23,15 +20,19 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Train ANN Model
-model = MLPClassifier(hidden_layer_sizes=(32, 16, 8), activation='relu', max_iter=500)
+# Initialize XGBoost model
+model = XGBClassifier(n_estimators=100, learning_rate=0.1, max_depth=6, random_state=42)
+
+# Train the model
 model.fit(X_train, y_train)
 
-# Evaluate Model
+# Predict on test data
 y_pred = model.predict(X_test)
+
+# Evaluate model
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
-# Save Model and Scaler
-joblib.dump(model, "model/model.pkl")
+# Save the model and scaler
+joblib.dump(model, "model/xgboost_model.pkl")
 joblib.dump(scaler, "model/scaler.pkl")
