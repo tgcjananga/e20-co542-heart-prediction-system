@@ -21,6 +21,54 @@ if not os.path.exists(scaler_path):
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
+def get_risk_category(probability):
+    """
+    Categorize risk based on prediction probability
+    """
+    if probability < 0.2:
+        return "Low Risk"
+    elif probability < 0.5:
+        return "Moderate Risk"
+    elif probability < 0.8:
+        return "High Risk"
+    else:
+        return "Very High Risk"
+
+def get_recommendations(risk_category):
+    """
+    Provide recommendations based on risk category
+    """
+    recommendations = {
+        "Low Risk": [
+            "Maintain a healthy lifestyle",
+            "Regular exercise",
+            "Balanced diet",
+            "Annual health checkups"
+        ],
+        "Moderate Risk": [
+            "Increase physical activity",
+            "Monitor blood pressure regularly",
+            "Reduce salt intake",
+            "Consider stress management techniques",
+            "Schedule follow-up with healthcare provider"
+        ],
+        "High Risk": [
+            "Immediate consultation with healthcare provider",
+            "Daily blood pressure monitoring",
+            "Strict diet control",
+            "Regular exercise under medical supervision",
+            "Stress reduction essential"
+        ],
+        "Very High Risk": [
+            "Immediate medical attention required",
+            "Follow prescribed medication regimen",
+            "Frequent medical monitoring",
+            "Lifestyle modifications under medical supervision",
+            "Emergency plan in place"
+        ]
+    }
+    return recommendations.get(risk_category, [])
+
 @app.route('/')
 def welcome():
     # Return the page that will display the visuals
@@ -53,10 +101,23 @@ def predict():
 
         # Predict using the model
         prediction = model.predict(input_data)[0]
+        
+        # Get prediction probability
+        prediction_prob = model.predict_proba(input_data)[0][1]
+        
+        # Get risk category and recommendations
+        risk_category = get_risk_category(prediction_prob)
+        recommendations = get_recommendations(risk_category)
 
-        # Return the prediction result
-        result = "Heart Disease Detected" if prediction == 1 else "No Heart Disease"
-        return render_template('predict.html', prediction=result)
+        # Prepare result dictionary
+        result = {
+            'prediction': "Heart Disease Detected" if prediction == 1 else "No Heart Disease",
+            'probability': round(prediction_prob * 100, 2),
+            'risk_category': risk_category,
+            'recommendations': recommendations
+        }
+
+        return render_template('predict.html', result=result)
 
     return render_template('predict.html', prediction=None)
 
