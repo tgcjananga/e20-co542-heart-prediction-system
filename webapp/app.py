@@ -22,6 +22,9 @@ model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
 def get_risk_category(probability):
+    """
+    Categorize risk based on prediction probability
+    """
     if probability < 0.2:
         return "Low Risk"
     elif probability < 0.5:
@@ -32,6 +35,9 @@ def get_risk_category(probability):
         return "Very High Risk"
 
 def get_recommendations(risk_category):
+    """
+    Provide recommendations based on risk category
+    """
     recommendations = {
         "Low Risk": [
             "Maintain a healthy lifestyle",
@@ -64,41 +70,46 @@ def get_recommendations(risk_category):
     return recommendations.get(risk_category, [])
 
 @app.route('/')
-def home():
+def welcome():
+    # Return the page that will display the visuals
     return render_template('index.html', prediction=None)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    try:
-        # Create a list of feature names in the correct order
-        feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 
-                        'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
-        
-        # Get input values in the correct order
-        input_data = [float(request.form[feature]) for feature in feature_names]
-        
-        # Debug print
-        print("Input data before scaling:", input_data)
-        
-        # Scale input data
-        input_data = np.array(input_data).reshape(1, -1)
-        input_data_scaled = scaler.transform(input_data)
-        
-        # Debug print
-        print("Input data after scaling:", input_data_scaled)
+    if request.method == 'POST':
+        # Extract the form data from the POST request
+        try:
+            age = float(request.form['age'])
+            sex = float(request.form['sex'])
+            cp = float(request.form['cp'])
+            trestbps = float(request.form['trestbps'])
+            chol = float(request.form['chol'])
+            fbs = float(request.form['fbs'])
+            restecg = float(request.form['restecg'])
+            thalach = float(request.form['thalach'])
+            exang = float(request.form['exang'])
+            oldpeak = float(request.form['oldpeak'])
+            slope = float(request.form['slope'])
+            ca = float(request.form['ca'])
+            thal = float(request.form['thal'])
+        except ValueError:
+            return render_template('predict.html', prediction="Invalid input. Please enter valid numbers.")
 
-        # Get prediction probability
-        prediction_prob = model.predict_proba(input_data_scaled)[0][1]
-        prediction = model.predict(input_data_scaled)[0]
+        # Prepare the input data as a numpy array and scale it
+        input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+        input_data = scaler.transform(input_data)
+
+        # Predict using the model
+        prediction = model.predict(input_data)[0]
         
-        # Debug print
-        print("Prediction:", prediction)
-        print("Prediction probability:", prediction_prob)
+        # Get prediction probability
+        prediction_prob = model.predict_proba(input_data)[0][1]
         
         # Get risk category and recommendations
         risk_category = get_risk_category(prediction_prob)
         recommendations = get_recommendations(risk_category)
 
+        # Prepare result dictionary
         result = {
             'prediction': "Heart Disease Detected" if prediction == 1 else "No Heart Disease",
             'probability': round(prediction_prob * 100, 2),
@@ -106,11 +117,9 @@ def predict():
             'recommendations': recommendations
         }
 
-        return render_template('index.html', result=result)
-    
-    except Exception as e:
-        print(f"Error in prediction: {str(e)}")  # Debug print
-        return render_template('index.html', error=f"Error in prediction: {str(e)}")
+        return render_template('predict.html', result=result)
+
+    return render_template('predict.html', prediction=None)
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)

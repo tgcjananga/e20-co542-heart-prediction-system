@@ -3,210 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heart Disease Prediction</title>
+    <title>iHeart - Heart Disease Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .image-container {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+            width: 45%; /* Adjust width for responsive layout */
         }
-        .input-group {
-            margin-bottom: 20px;
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
         }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .input-description {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .risk-meter {
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(to right, #4CAF50, #FFC107, #FF5722, #f44336);
-            margin: 10px 0;
-            border-radius: 10px;
-            position: relative;
-        }
-        .risk-indicator {
-            width: 10px;
-            height: 30px;
-            background: #000;
-            position: absolute;
-            transform: translateX(-50%);
-        }
-        .result-section {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+
+        .image-description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
             background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
-        .recommendations {
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
             margin-top: 20px;
         }
-        .recommendations li {
-            margin: 10px 0;
+
+        .button:hover {
+            background-color: #0056b3;
         }
-        .error {
-            color: red;
-            padding: 10px;
-            border: 1px solid red;
-            border-radius: 4px;
-            margin: 10px 0;
+
+        /* Layout for the visuals section */
+        .visuals {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Layout for the first row (only one image) */
+        .visuals .row-1 {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Layout for the second row (3 images) */
+        .visuals .row-2 {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>Heart Disease Prediction System</h1>
-    <form action="/predict" method="post">
-        <div class="input-group">
-            <label for="age">Age:</label>
-            <div class="input-description">Enter your age in years (e.g., 45)</div>
-            <input type="number" name="age" required>
-        </div>
+    <div class="container">
+        <header>
+            <h1 class="welcome-text">Welcome to <span class="brand">iHeart</span></h1>
+            <p class="subtext">An interactive heart disease analysis dashboard</p>
+        </header>
 
-        <div class="input-group">
-            <label for="sex">Sex:</label>
-            <div class="input-description">Enter 0 for Female, 1 for Male</div>
-            <input type="number" name="sex" min="0" max="1" required>
-        </div>
+        <h2>Dataset Summary</h2>
+        <pre class="analysis-box">{{ analysis_results }}</pre>
 
-        <div class="input-group">
-            <label for="cp">Chest Pain Type:</label>
-            <div class="input-description">
-                0: Typical angina
-                1: Atypical angina
-                2: Non-anginal pain
-                3: Asymptomatic
+        <h2>Visualizations</h2>
+
+        <div class="visuals">
+            <!-- First row (Heatmap) -->
+            <div class="row-1">
+                <div class="image-container">
+                    <h3>Heatmap</h3>
+                    <img src="{{ url_for('static', filename='visuals/heatmap.png') }}" alt="Heatmap">
+                    <div class="image-description">
+                        This heatmap shows the correlation between the different features in the dataset. High correlation indicates strong relationships between features.
+                    </div>
+                </div>
             </div>
-            <input type="number" name="cp" min="0" max="3" required>
-        </div>
 
-        <div class="input-group">
-            <label for="trestbps">Resting Blood Pressure:</label>
-            <div class="input-description">Enter resting blood pressure in mm Hg (normal range: 90-140)</div>
-            <input type="number" name="trestbps" required>
-        </div>
+            <!-- Second row (Other 3 images) -->
+            <div class="row-2">
+                <div class="image-container">
+                    <h3>Target Distribution</h3>
+                    <img src="{{ url_for('static', filename='visuals/target_distribution.png') }}" alt="Target Distribution">
+                    <div class="image-description">
+                        This plot shows the distribution of the target variable. The target represents whether or not a person has heart disease (1 = disease, 0 = no disease).
+                    </div>
+                </div>
 
-        <div class="input-group">
-            <label for="chol">Cholesterol:</label>
-            <div class="input-description">Enter serum cholesterol in mg/dl (normal range: 120-240)</div>
-            <input type="number" name="chol" required>
-        </div>
+                <div class="image-container">
+                    <h3>Gender Distribution</h3>
+                    <img src="{{ url_for('static', filename='visuals/gender_distribution.png') }}" alt="Gender Distribution">
+                    <div class="image-description">
+                        This plot shows the distribution of gender in the dataset. It indicates the number of male and female patients.
+                    </div>
+                </div>
 
-        <div class="input-group">
-            <label for="fbs">Fasting Blood Sugar:</label>
-            <div class="input-description">Enter 1 if fasting blood sugar > 120 mg/dl, 0 if not</div>
-            <input type="number" name="fbs" min="0" max="1" required>
-        </div>
-
-        <div class="input-group">
-            <label for="restecg">Resting ECG Results:</label>
-            <div class="input-description">
-                0: Normal
-                1: ST-T wave abnormality
-                2: Left ventricular hypertrophy
+                <div class="image-container">
+                    <h3>Heart Disease by Gender</h3>
+                    <img src="{{ url_for('static', filename='visuals/heart_disease_by_gender.png') }}" alt="Heart Disease by Gender">
+                    <div class="image-description">
+                        This plot shows the relationship between gender and heart disease. It breaks down the disease distribution by gender.
+                    </div>
+                </div>
             </div>
-            <input type="number" name="restecg" min="0" max="2" required>
         </div>
 
-        <div class="input-group">
-            <label for="thalach">Maximum Heart Rate:</label>
-            <div class="input-description">Enter maximum heart rate achieved (normal range: 60-220)</div>
-            <input type="number" name="thalach" required>
-        </div>
-
-        <div class="input-group">
-            <label for="exang">Exercise Induced Angina:</label>
-            <div class="input-description">Enter 1 if exercise induced angina is present, 0 if not</div>
-            <input type="number" name="exang" min="0" max="1" required>
-        </div>
-
-        <div class="input-group">
-            <label for="oldpeak">ST Depression:</label>
-            <div class="input-description">Enter ST depression induced by exercise relative to rest (0.0-6.0)</div>
-            <input type="number" step="0.1" name="oldpeak" required>
-        </div>
-
-        <div class="input-group">
-            <label for="slope">Slope of Peak Exercise ST Segment:</label>
-            <div class="input-description">
-                0: Upsloping
-                1: Flat
-                2: Downsloping
-            </div>
-            <input type="number" name="slope" min="0" max="2" required>
-        </div>
-
-        <div class="input-group">
-            <label for="ca">Number of Major Vessels:</label>
-            <div class="input-description">Number of major vessels colored by fluoroscopy (0-3)</div>
-            <input type="number" name="ca" min="0" max="3" required>
-        </div>
-
-        <div class="input-group">
-            <label for="thal">Thalassemia:</label>
-            <div class="input-description">
-                0: Normal
-                1: Fixed defect
-                2: Reversible defect
-                3: Not available
-            </div>
-            <input type="number" name="thal" min="0" max="3" required>
-        </div>
-
-        <button type="submit">Predict</button>
-    </form>
-
-    {% if result %}
-    <div class="result-section">
-        <h2>Prediction Results</h2>
-        <p><strong>Primary Assessment:</strong> {{ result.prediction }}</p>
-        <p><strong>Risk Probability:</strong> {{ result.probability }}%</p>
-        <p><strong>Risk Category:</strong> {{ result.risk_category }}</p>
-        
-        <div class="risk-meter">
-            <div class="risk-indicator" style="left: {{ result.probability }}%"></div>
-        </div>
-        
-        <div class="recommendations">
-            <h3>Recommendations:</h3>
-            <ul>
-                {% for recommendation in result.recommendations %}
-                <li>{{ recommendation }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+        <a href="{{ url_for('predict') }}" class="button">Go to Prediction</a>
     </div>
-    {% endif %}
-
-    {% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-    {% endif %}
 </body>
 </html>
