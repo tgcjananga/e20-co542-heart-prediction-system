@@ -21,44 +21,96 @@ if not os.path.exists(scaler_path):
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
+def get_risk_category(probability):
+    if probability < 0.2:
+        return "Low Risk"
+    elif probability < 0.5:
+        return "Moderate Risk"
+    elif probability < 0.8:
+        return "High Risk"
+    else:
+        return "Very High Risk"
+
+def get_recommendations(risk_category):
+    recommendations = {
+        "Low Risk": [
+            "Maintain a healthy lifestyle",
+            "Regular exercise",
+            "Balanced diet",
+            "Annual health checkups"
+        ],
+        "Moderate Risk": [
+            "Increase physical activity",
+            "Monitor blood pressure regularly",
+            "Reduce salt intake",
+            "Consider stress management techniques",
+            "Schedule follow-up with healthcare provider"
+        ],
+        "High Risk": [
+            "Immediate consultation with healthcare provider",
+            "Daily blood pressure monitoring",
+            "Strict diet control",
+            "Regular exercise under medical supervision",
+            "Stress reduction essential"
+        ],
+        "Very High Risk": [
+            "Immediate medical attention required",
+            "Follow prescribed medication regimen",
+            "Frequent medical monitoring",
+            "Lifestyle modifications under medical supervision",
+            "Emergency plan in place"
+        ]
+    }
+    return recommendations.get(risk_category, [])
+
 @app.route('/')
-def welcome():
-    # Return the page that will display the visuals
+def home():
     return render_template('index.html', prediction=None)
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        # Extract the form data from the POST request
-        try:
-            age = float(request.form['age'])
-            sex = float(request.form['sex'])
-            cp = float(request.form['cp'])
-            trestbps = float(request.form['trestbps'])
-            chol = float(request.form['chol'])
-            fbs = float(request.form['fbs'])
-            restecg = float(request.form['restecg'])
-            thalach = float(request.form['thalach'])
-            exang = float(request.form['exang'])
-            oldpeak = float(request.form['oldpeak'])
-            slope = float(request.form['slope'])
-            ca = float(request.form['ca'])
-            thal = float(request.form['thal'])
-        except ValueError:
-            return render_template('predict.html', prediction="Invalid input. Please enter valid numbers.")
+    try:
+        # Create a list of feature names in the correct order
+        feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 
+                        'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+        
+        # Get input values in the correct order
+        input_data = [float(request.form[feature]) for feature in feature_names]
+        
+        # Debug print
+        print("Input data before scaling:", input_data)
+        
+        # Scale input data
+        input_data = np.array(input_data).reshape(1, -1)
+        input_data_scaled = scaler.transform(input_data)
+        
+        # Debug print
+        print("Input data after scaling:", input_data_scaled)
 
-        # Prepare the input data as a numpy array and scale it
-        input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
-        input_data = scaler.transform(input_data)
+        # Get prediction probability
+        prediction_prob = model.predict_proba(input_data_scaled)[0][1]
+        prediction = model.predict(input_data_scaled)[0]
+        
+        # Debug print
+        print("Prediction:", prediction)
+        print("Prediction probability:", prediction_prob)
+        
+        # Get risk category and recommendations
+        risk_category = get_risk_category(prediction_prob)
+        recommendations = get_recommendations(risk_category)
 
-        # Predict using the model
-        prediction = model.predict(input_data)[0]
+        result = {
+            'prediction': "Heart Disease Detected" if prediction == 1 else "No Heart Disease",
+            'probability': round(prediction_prob * 100, 2),
+            'risk_category': risk_category,
+            'recommendations': recommendations
+        }
 
-        # Return the prediction result
-        result = "Heart Disease Detected" if prediction == 1 else "No Heart Disease"
-        return render_template('predict.html', prediction=result)
-
-    return render_template('predict.html', prediction=None)
+        return render_template('index.html', result=result)
+    
+    except Exception as e:
+        print(f"Error in prediction: {str(e)}")  # Debug print
+        return render_template('index.html', error=f"Error in prediction: {str(e)}")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
