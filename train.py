@@ -6,7 +6,7 @@ from xgboost import XGBClassifier
 import joblib
 
 # Load dataset
-data = pd.read_csv("data/heart_disease.csv")
+data = pd.read_csv("../data/heart_disease.csv")
 
 # Define input and output features
 X = data.drop(columns=["target"])  # 'target' is the output column
@@ -34,5 +34,5 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
 # Save the model and scaler
-joblib.dump(model, "model/xgboost_model.pkl")
-joblib.dump(scaler, "model/scaler.pkl")
+joblib.dump(model, "../model/xgboost_model.pkl")
+joblib.dump(scaler, "../model/scaler.pkl")

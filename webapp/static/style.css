@@ -19,6 +19,21 @@ body {
 header {
     margin-bottom: 30px;
 }
+/* Logo Styling */
+.logo {
+    position: absolute;
+    left: 400px;
+    top:0px;
+    width: 150px;
+    height: 150px;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 
 .welcome-text {
     font-size: 2.5em;
@@ -39,7 +54,8 @@ header {
 /* Styling for Dataset Summary */
 .analysis-box {
     background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
+    /* padding: 15px; */
+    height: 5px;
     border-radius: 8px;
     text-align: left;
     overflow: auto;
@@ -70,6 +86,51 @@ img {
 img:hover {
     transform: scale(1.05);
 }
+
+.image-container {
+    display: inline-block;
+    margin: 20px;
+    text-align: center;
+    width: 45%; /* Adjust width for responsive layout */
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.image-description {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+/* Layout for the visuals section */
+.visuals {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Layout for the first row (only one image) */
+.visuals .row-1 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Layout for the second row (3 images) */
+.visuals .row-2 {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
 
 /* Button */
 .button {

@@ -5,79 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iHeart - Heart Disease Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <style>
-        .image-container {
-            display: inline-block;
-            margin: 20px;
-            text-align: center;
-            width: 45%; /* Adjust width for responsive layout */
-        }
-
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .image-description {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #555;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Layout for the visuals section */
-        .visuals {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* Layout for the first row (only one image) */
-        .visuals .row-1 {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
-        /* Layout for the second row (3 images) */
-        .visuals .row-2 {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1 class="welcome-text">Welcome to <span class="brand">iHeart</span></h1>
-            <p class="subtext">An interactive heart disease analysis dashboard</p>
-        </header>
-
-        <h2>Dataset Summary</h2>
+        <div class="header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='../static/visuals/logo.png') }}" alt="iHeart Logo">
+            </div>
+            <header>
+                <h1 class="welcome-text">Welcome to <span class="brand">iHeart</span></h1>
+            </header>
+        </div>
+        <br><br>
+        <p>iHeart is a heart disease prediction system that uses neural networks to analyze key health data such as age, blood pressure, and
+             cholesterol levels. It provides users with a risk assessment and personalized recommendations for preventing cardiovascular issues,
+              enabling early detection and promoting heart health awareness.</p>
         <pre class="analysis-box">{{ analysis_results }}</pre>
 
-        <h2>Visualizations</h2>
+        <h2>Dataset Summary</h2>
 
         <div class="visuals">
             <!-- First row (Heatmap) -->
