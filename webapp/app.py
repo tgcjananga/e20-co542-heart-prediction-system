@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request
+from tensorflow.keras.models import load_model
 import joblib
 import numpy as np
 import json
@@ -11,7 +12,7 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load trained model and scaler
-model_path = os.path.join(BASE_DIR, "model", "model.pkl")
+model_path = os.path.join(BASE_DIR, "model", "ann_model.h5")
 scaler_path = os.path.join(BASE_DIR, "model", "scaler.pkl")
 
 # Check if files exist
@@ -20,7 +21,7 @@ if not os.path.exists(model_path):
 if not os.path.exists(scaler_path):
     raise FileNotFoundError(f"Scaler file not found: {scaler_path}")
 
-model = joblib.load(model_path)
+model = load_model(model_path)
 scaler = joblib.load(scaler_path)
 
 # Feature names for visualization
