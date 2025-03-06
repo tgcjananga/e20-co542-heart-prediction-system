@@ -14,104 +14,129 @@
     <form action="/predict" method="post">
       <div class="input-group">
         <label for="age">Age:</label>
-        <div class="input-description">Enter your age in years (e.g., 45)</div>
-        <input type="number" name="age" required />
+        <div class="input-description">Enter your age in years</div>
+        <input type="number" name="age" required placeholder="Eg: 25" />
       </div>
 
       <div class="input-group">
         <label for="sex">Sex:</label>
-        <div class="input-description">Enter 0 for Female, 1 for Male</div>
-        <input type="number" name="sex" min="0" max="1" required />
+        <select name="sex" class="input-select" required>
+          <option value="0">Female</option>
+          <option value="1">Male</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="cp">Chest Pain Type:</label>
-        <div class="input-description">
-          0: Typical angina 1: Atypical angina 2: Non-anginal pain 3:
-          Asymptomatic
-        </div>
-        <input type="number" name="cp" min="0" max="3" required />
+        <select name="cp" class="input-select" required>
+          <option value="0">Typical Angina</option>
+          <option value="1">Atypical Angina</option>
+          <option value="2">Non-Anginal Pain</option>
+          <option value="3">Asymptomatic</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="trestbps">Resting Blood Pressure:</label>
         <div class="input-description">
-          Enter resting blood pressure in mm Hg (normal range: 90-140)
+          Enter resting blood pressure in mmHg
         </div>
-        <input type="number" name="trestbps" required />
+        <input
+          type="number"
+          name="trestbps"
+          required
+          placeholder="normal range: 90-140"
+        />
       </div>
 
       <div class="input-group">
         <label for="chol">Cholesterol:</label>
-        <div class="input-description">
-          Enter serum cholesterol in mg/dl (normal range: 120-240)
-        </div>
-        <input type="number" name="chol" required />
+        <div class="input-description">Enter serum cholesterol in mg/dl</div>
+        <input
+          type="number"
+          name="chol"
+          required
+          placeholder="normal range: 120-240"
+        />
       </div>
 
       <div class="input-group">
         <label for="fbs">Fasting Blood Sugar:</label>
-        <div class="input-description">
-          Enter 1 if fasting blood sugar > 120 mg/dl, 0 if not
-        </div>
-        <input type="number" name="fbs" min="0" max="1" required />
+        <select name="fbs" class="input-select" required>
+          <option value="0">≤ 120 mg/dl</option>
+          <option value="1">> 120 mg/dl</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="restecg">Resting ECG Results:</label>
-        <div class="input-description">
-          0: Normal 1: ST-T wave abnormality 2: Left ventricular hypertrophy
-        </div>
-
-        <input type="number" name="restecg" min="0" max="2" required />
+        <select name="restecg" class="input-select" required>
+          <option value="0">Normal</option>
+          <option value="1">ST-T Wave Abnormality</option>
+          <option value="2">Left Ventricular Hypertrophy</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="thalach">Maximum Heart Rate:</label>
-        <div class="input-description">
-          Enter maximum heart rate achieved (normal range: 60-220)
-        </div>
-        <input type="number" name="thalach" required />
+        <div class="input-description">Enter maximum heart rate</div>
+        <input
+          type="number"
+          name="thalach"
+          required
+          placeholder="normal range: 60-100"
+        />
       </div>
 
       <div class="input-group">
         <label for="exang">Exercise Induced Angina:</label>
-        <div class="input-description">
-          Enter 1 if exercise induced angina is present, 0 if not
-        </div>
-        <input type="number" name="exang" min="0" max="1" required />
+        <select name="exang" class="input-select" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="oldpeak">ST Depression:</label>
         <div class="input-description">
-          Enter ST depression induced by exercise relative to rest (0.0-6.0)
+          Enter ST depression induced by exercise relative to rest
         </div>
-        <input type="number" step="0.1" name="oldpeak" required />
+        <input
+          type="number"
+          step="0.1"
+          name="oldpeak"
+          required
+          placeholder="normal range: 0.0-6.0"
+        />
       </div>
 
       <div class="input-group">
         <label for="slope">Slope of Peak Exercise ST Segment:</label>
-        <div class="input-description">0: Upsloping 1: Flat 2: Downsloping</div>
-
-        <input type="number" name="slope" min="0" max="2" required />
+        <select name="slope" class="input-select" required>
+          <option value="0">Upsloping</option>
+          <option value="1">Flat</option>
+          <option value="2">Downsloping</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="ca">Number of Major Vessels:</label>
-        <div class="input-description">
-          Number of major vessels colored by fluoroscopy (0-3)
-        </div>
-        <input type="number" name="ca" min="0" max="3" required />
+        <select name="ca" class="input-select" required>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
       </div>
 
       <div class="input-group">
         <label for="thal">Thalassemia:</label>
-        <div class="input-description">
-          0: Normal 1: Fixed defect 2: Reversible defect 3: Not available
-        </div>
-
-        <input type="number" name="thal" min="0" max="3" required />
+        <select name="thal" class="input-select" required>
+          <option value="0">Normal</option>
+          <option value="1">Fixed Defect</option>
+          <option value="2">Reversible Defect</option>
+          <option value="3">Not Available</option>
+        </select>
       </div>
 
       <button type="submit">Predict</button>
