@@ -97,8 +97,9 @@ def predict():
 
         # Prepare the input data as a numpy array and scale it
         input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+        print(input_data)
         input_data = scaler.transform(input_data)
-
+        
         # Predict using the model
         prediction = model.predict(input_data)[0]
         
