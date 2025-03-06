@@ -17,6 +17,27 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Register Required Resource Providers
+        run: |
+          # Register Microsoft.MachineLearningServices provider
+          az provider register --namespace Microsoft.MachineLearningServices
+          
+          # Register Microsoft.ContainerService provider (needed for AKS deployments)
+          az provider register --namespace Microsoft.ContainerService
+          
+          # Register Microsoft.Storage provider (needed for model storage)
+          az provider register --namespace Microsoft.Storage
+          
+          # Wait for registrations to complete
+          echo "Waiting for Microsoft.MachineLearningServices registration..."
+          az provider show -n Microsoft.MachineLearningServices --query "registrationState" -o tsv
+          
+          echo "Waiting for Microsoft.ContainerService registration..."
+          az provider show -n Microsoft.ContainerService --query "registrationState" -o tsv
+          
+          echo "Waiting for Microsoft.Storage registration..."
+          az provider show -n Microsoft.Storage --query "registrationState" -o tsv
 
       - name: Check if Endpoint Exists
         id: check_endpoint
