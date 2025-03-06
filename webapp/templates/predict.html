@@ -85,6 +85,7 @@
           name="thalach"
           required
           placeholder="normal range: 60-100"
+          title="Highest heart rate achieved during exercise."
         />
       </div>
 
@@ -107,12 +108,21 @@
           name="oldpeak"
           required
           placeholder="normal range: 0.0-6.0"
+          title="ST depression in ECG caused by exercise (higher values indicate more severe heart stress)"
         />
       </div>
 
       <div class="input-group">
         <label for="slope">Slope of Peak Exercise ST Segment:</label>
-        <select name="slope" class="input-select" required>
+        <select
+          name="slope"
+          class="input-select"
+          required
+          title="
+        Upsloping: normal response to exercise
+        Flat : abnormal, could indicate heart disease
+        Downsloping : strongly abnormal"
+        >
           <option value="0">Upsloping</option>
           <option value="1">Flat</option>
           <option value="2">Downsloping</option>
@@ -121,7 +131,12 @@
 
       <div class="input-group">
         <label for="ca">Number of Major Vessels:</label>
-        <select name="ca" class="input-select" required>
+        <select
+          name="ca"
+          class="input-select"
+          required
+          title="Number of major blood vessels visible in fluoroscopy. Higher values indicate more severe blockage."
+        >
           <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>
