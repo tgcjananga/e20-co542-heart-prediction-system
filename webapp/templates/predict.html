@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='predict.css') }}"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   </head>
   <body>
     <h1>Heart Disease Prediction System</h1>
@@ -155,6 +156,19 @@
           style="left: {{ result.probability }}%"
         ></div>
       </div>
+      
+      <!-- Feature Visualization Section -->
+      <div class="visualization-section">
+        <h3>Feature Impact on Prediction</h3>
+        <div class="chart-container">
+          <canvas id="featureChart"></canvas>
+        </div>
+        
+        <div class="feature-details">
+          <h3>Top Contributing Factors</h3>
+          <div id="featureTable"></div>
+        </div>
+      </div>
 
       <div class="recommendations">
         <h3>Recommendations:</h3>
@@ -165,6 +179,89 @@
         </ul>
       </div>
     </div>
+    
+    <script>
+      // Parse feature data from JSON
+      const featureData = JSON.parse('{{ result.feature_data|safe }}');
+      
+      // Get top features (absolute value of contribution)
+      const topFeatures = featureData.slice(0, 5);
+      
+      // Prepare data for chart
+      const labels = topFeatures.map(f => f.name);
+      const values = topFeatures.map(f => f.contribution);
+      const colors = values.map(v => v >= 0 ? '#4caf50' : '#f44336');
+      
+      // Create chart
+      const ctx = document.getElementById('featureChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Feature Impact (%)',
+            data: values,
+            backgroundColor: colors,
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const value = context.raw;
+                  return `Impact: ${value.toFixed(2)}%`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#ffffff'
+              }
+            },
+            y: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#ffffff'
+              }
+            }
+          }
+        }
+      });
+      
+      // Create feature table
+      const tableDiv = document.getElementById('featureTable');
+      let tableHTML = '<table class="feature-table"><thead><tr><th>Feature</th><th>Value</th><th>Impact</th></tr></thead><tbody>';
+      
+      featureData.forEach(feature => {
+        const impactClass = feature.contribution >= 0 ? 'positive-impact' : 'negative-impact';
+        tableHTML += `
+          <tr>
+            <td>${feature.name}</td>
+            <td>${feature.description}</td>
+            <td class="${impactClass}">${feature.contribution.toFixed(2)}%</td>
+          </tr>
+        `;
+      });
+      
+      tableHTML += '</tbody></table>';
+      tableDiv.innerHTML = tableHTML;
+    </script>
     {% endif %} {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
