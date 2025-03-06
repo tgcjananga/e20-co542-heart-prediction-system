@@ -105,3 +105,58 @@ button:hover {
   margin: 10px 0;
   background-color: rgba(255, 82, 82, 0.1);
 }
+
+/* Modal Background */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 25%;
+  top: 25%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background: rgb(51, 50, 50);
+  color: white;
+  padding: 20px;
+  width: 50%;
+  max-width: 500px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Risk Meter */
+.risk-meter {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
+  border-radius: 5px;
+  position: relative;
+  margin: 10px 0;
+}
+
+.risk-indicator {
+  position: absolute;
+  height: 100%;
+  width: 10px;
+  background: red;
+  border-radius: 5px;
+}

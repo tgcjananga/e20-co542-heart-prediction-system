@@ -11,7 +11,7 @@
   </head>
   <body>
     <h1>Heart Disease Prediction System</h1>
-    <form action="/predict" method="post">
+    <form action="/predict" method="post" id="prediction-form">
       <div class="input-group">
         <label for="age">Age:</label>
         <div class="input-description">Enter your age in years</div>
@@ -143,28 +143,51 @@
     </form>
 
     {% if result %}
-    <div class="result-section">
-      <h2>Prediction Results</h2>
-      <p><strong>Primary Assessment:</strong> {{ result.prediction }}</p>
-      <p><strong>Risk Probability:</strong> {{ result.probability }}%</p>
-      <p><strong>Risk Category:</strong> {{ result.risk_category }}</p>
+    <div id="prediction-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Prediction Results</h2>
+        <p><strong>Primary Assessment:</strong> {{ result.prediction }}</p>
+        <p><strong>Risk Probability:</strong> {{ result.probability }}%</p>
+        <p><strong>Risk Category:</strong> {{ result.risk_category }}</p>
 
-      <div class="risk-meter">
-        <div
-          class="risk-indicator"
-          style="left: {{ result.probability }}%"
-        ></div>
-      </div>
+        <div class="risk-meter">
+          <div
+            class="risk-indicator"
+            style="left: {{ result.probability }}%"
+          ></div>
+        </div>
 
-      <div class="recommendations">
-        <h3>Recommendations:</h3>
-        <ul>
-          {% for recommendation in result.recommendations %}
-          <li>{{ recommendation }}</li>
-          {% endfor %}
-        </ul>
+        <div class="recommendations">
+          <h3>Recommendations:</h3>
+          <ul>
+            {% for recommendation in result.recommendations %}
+            <li>{{ recommendation }}</li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var modal = document.getElementById("prediction-modal");
+        var closeBtn = document.querySelector(".close-btn");
+        modal.style.display = "block"; // Show the modal when result exists
+        if (modal) {
+          document.getElementById("prediction-form").blur;
+        }
+        closeBtn.addEventListener("click", function () {
+          modal.style.display = "none";
+        });
+
+        window.addEventListener("click", function (event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        });
+      });
+    </script>
     {% endif %} {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
