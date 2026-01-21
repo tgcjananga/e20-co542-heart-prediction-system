@@ -1,0 +1,71 @@
+E:.
+│   README.md
+│   requirements.txt
+│   score.py
+│   tempCodeRunnerFile.py
+│   train.py
+│
+├───.github
+│   └───workflows
+│           deploy_model.yml
+│           setup.yml
+│           train_model.yml
+│
+├───azureml
+│       deploy.yml
+│       environment.yml
+│       train.yml
+│
+├───code
+│       put-your-code-here.txt
+│
+├───data
+│       heart_disease.csv
+│
+├───docs
+│   │   .gitignore
+│   │   README.md
+│   │   _config.yml
+│   │
+│   ├───data
+│   │       index.json
+│   │
+│   └───images
+│           sample.png
+│
+├───model
+│       model.pkl
+│       scaler.pkl
+│       xgboost_model.pkl
+│
+├───static
+│   └───visuals
+│           heatmap.png
+│           summary.csv
+│           target_distribution.png
+│
+└───webapp
+    │   analysis.py
+    │   app.py
+    │   requirements.txt
+    │
+    ├───static
+    │   │   predict.css
+    │   │   style.css
+    │   │
+    │   └───visuals
+    │           gender_distribution.png
+    │           heart_disease_by_gender.png
+    │           heatmap.png
+    │           logo.png
+    │           target_distribution.png
+    │
+    ├───templates
+    │       index.html
+    │       predict.html
+    │
+    └───__pycache__
+            analysis.cpython-39.pyc
+
+
+E:\Project\e20-co542-heart-prediction-system>
